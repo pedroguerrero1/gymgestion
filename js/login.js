@@ -1,6 +1,7 @@
 let formulario = document.getElementById("form-login");
 let inputEmail = document.getElementById("email");
 let inputPassword = document.getElementById("password");
+let mensajeError = document.getElementById("mensaje-error");
 
 const URL_USERS = "https://6b0105ad1c637a569e52bdac.mockapi.io/api/v1/users";
 
@@ -32,14 +33,12 @@ async function iniciarSesion(email, password) {
     });
 
     if (usuarioEncontrado) {
-        console.log("Login correcto");
-        console.log(usuarioEncontrado);
         sessionStorage.setItem("usuarioId", usuarioEncontrado.id);
         sessionStorage.setItem("usuarioNombre", usuarioEncontrado.nombre);
         sessionStorage.setItem("usuarioRol", usuarioEncontrado.role);
         window.location.href = "sistema.html";
     } else {
-        console.log("Correo o contraseña incorrectos");
+        mensajeError.textContent = "Correo o contraseña incorrectos";
     }
 }
 
@@ -50,4 +49,4 @@ formulario.addEventListener("submit", function(event) {
     let password = inputPassword.value;
 
     iniciarSesion(email, password);
-});
+});

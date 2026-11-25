@@ -1,8 +1,8 @@
-import { obtenerActividades, mostrarActividades, mostrarFormularioActividad, eliminarActividad,actualizarActividad, mostrarFormularioEdicion } from "./actividades.js";
+import { obtenerActividades, mostrarActividades, mostrarFormularioActividad, eliminarActividad,actualizarActividad, mostrarFormularioEdicion, mostrarTarjetasActividades } from "./actividades.js";
 
 import {obtenerUsuarios, mostrarUsuarios, mostrarFormularioUsuario, mostrarFormularioEdicionUsuario, eliminarUsuario} from "./usuarios.js";
 
-import {obtenerReservasCompletas, mostrarReservas, cambiarEstadoReserva, guardarReserva, hayCupoDisponible, obtenerMisReservas} from "./reservas.js";
+import {obtenerReservasCompletas, mostrarReservas, cambiarEstadoReserva, guardarReserva, hayCupoDisponible, obtenerMisReservas, obtenerReservas} from "./reservas.js";
 
 
 // Si no hay sesion iniciada vuelve al login
@@ -72,17 +72,27 @@ btnInicio.addEventListener("click", function(event) {
 });
 
 
+// El admin ve la tabla para editar, el socio ve las cards para reservar
+async function cargarActividades() {
+
+    const actividades = await obtenerActividades();
+
+    if (usuarioRol === "ADMIN") {
+        mostrarActividades(actividades, contenido);
+        controlarAccesos();
+    } else {
+        const reservas = await obtenerReservas();
+        mostrarTarjetasActividades(actividades, reservas, usuarioId, contenido);
+    }
+}
+
 btnActividades.addEventListener("click", async function(event) {
 
     event.preventDefault();
 
     cambiarActivo(btnActividades);
 
-    let actividades = await obtenerActividades();
-
-    mostrarActividades(actividades,contenido);
-
-    controlarAccesos();
+    await cargarActividades();
 
 });
 
@@ -311,6 +321,20 @@ contenido.addEventListener("click", async function(event) {
             return;
         }
 
+        // por si el socio ya estaba anotado en esta actividad
+        const reservas = await obtenerReservas();
+
+        const yaReservo = reservas.some((reserva) =>
+            reserva.activityId === activityId &&
+            reserva.userId === usuarioId &&
+            reserva.estado === "confirmada"
+        );
+
+        if (yaReservo) {
+            alert("Ya tenés una reserva en esta actividad");
+            return;
+        }
+
         let confirmar = confirm("¿Querés reservar esta actividad?");
 
         if (!confirmar) {
@@ -336,6 +360,7 @@ contenido.addEventListener("click", async function(event) {
 
         if (reserva) {
             alert("¡Reserva realizada correctamente!");
+            await cargarActividades();
         } else {
             alert("No se pudo realizar la reserva");
         }

@@ -50,13 +50,6 @@ export function mostrarActividades(actividades, contenido) {
                         title="Eliminar">
                         <i class="fas fa-trash"></i>
                     </button>
-
-                    <button class="btn btn-success btn-sm btn-reservar"
-                        data-id="${actividad.id}"
-                        data-role="user">
-                        <i class="fas fa-calendar-check"></i> Reservar
-                    </button>
-
                 </td>
             </tr>
         `;
@@ -97,6 +90,122 @@ export function mostrarActividades(actividades, contenido) {
             </div>
         </div>
     `;
+}
+
+
+
+// Cupo maximo menos las reservas que no estan canceladas
+export function calcularCuposRestantes(actividad, reservas) {
+
+    const ocupadas = reservas.filter((reserva) =>
+        reserva.activityId === actividad.id && reserva.estado !== "cancelada"
+    );
+
+    return Number(actividad.cupoMaximo) - ocupadas.length;
+}
+
+
+// Crea un renglon de la card con un icono y un texto
+function crearDato(icono, texto) {
+
+    const parrafo = document.createElement("p");
+    parrafo.className = "mb-1";
+
+    const i = document.createElement("i");
+    i.className = `fas ${icono} mr-2 text-muted`;
+
+    parrafo.append(i, texto);
+
+    return parrafo;
+}
+
+
+// Vista del socio: una card por actividad con los cupos que quedan
+export function mostrarTarjetasActividades(actividades, reservas, usuarioId, contenido) {
+
+    const titulo = document.createElement("h3");
+    titulo.className = "mb-3";
+    titulo.textContent = "Actividades disponibles";
+
+    const grilla = document.createElement("div");
+    grilla.className = "grilla-actividades";
+
+    actividades.forEach((actividad) => {
+
+        const cupos = calcularCuposRestantes(actividad, reservas);
+
+        const yaReservo = reservas.some((reserva) =>
+            reserva.activityId === actividad.id &&
+            reserva.userId === usuarioId &&
+            reserva.estado === "confirmada"
+        );
+
+        const card = document.createElement("div");
+        card.className = "card card-actividad";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+
+        const nombre = document.createElement("h3");
+        nombre.className = "card-title";
+        nombre.textContent = actividad.nombre;
+
+        header.append(nombre);
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+
+        body.append(
+            crearDato("fa-user", actividad.instructor),
+            crearDato("fa-calendar-alt", actividad.dias),
+            crearDato("fa-clock", actividad.horario)
+        );
+
+        // el color de los cupos cambia segun cuantos quedan
+        const lugares = document.createElement("span");
+        lugares.className = "badge badge-success";
+        lugares.textContent = `${cupos} lugares libres`;
+
+        if (cupos === 1) {
+            lugares.textContent = "1 lugar libre";
+        }
+
+        if (cupos <= 3) {
+            lugares.className = "badge badge-warning";
+        }
+
+        if (cupos <= 0) {
+            lugares.className = "badge badge-danger";
+            lugares.textContent = "Sin cupo";
+        }
+
+        body.append(lugares);
+
+        const footer = document.createElement("div");
+        footer.className = "card-footer";
+
+        const boton = document.createElement("button");
+        boton.className = "btn btn-success btn-block btn-reservar";
+        boton.dataset.id = actividad.id;
+        boton.textContent = "Reservar";
+
+        if (yaReservo) {
+            boton.disabled = true;
+            boton.className = "btn btn-secondary btn-block";
+            boton.textContent = "Ya estás anotado";
+        } else if (cupos <= 0) {
+            boton.disabled = true;
+            boton.className = "btn btn-secondary btn-block";
+            boton.textContent = "Sin cupo";
+        }
+
+        footer.append(boton);
+
+        card.append(header, body, footer);
+        grilla.append(card);
+    });
+
+    contenido.replaceChildren(titulo, grilla);
 }
 
 
@@ -325,4 +434,3 @@ formulario.addEventListener("submit", async function(event) {
 });
 
 }
-

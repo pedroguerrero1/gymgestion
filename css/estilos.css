@@ -1,0 +1,33 @@
+/* Grilla de actividades del socio */
+.grilla-actividades {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* las cards de una misma fila quedan de la misma altura */
+.card-actividad {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.card-actividad .card-body {
+    flex-grow: 1;
+}
+
+.card-actividad .card-title {
+    font-weight: bold;
+}
+
+.card-actividad .badge {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* en el celular las cards ocupan todo el ancho */
+@media (max-width: 576px) {
+    .grilla-actividades {
+        grid-template-columns: 1fr;
+    }
+}

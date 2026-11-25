@@ -1,7 +1,7 @@
 const URL_BOOKINGS = "https://6b03b8009e7cafb37dbf78ed.mockapi.io/api/v1/bookings";
 
 import { obtenerUsuarios } from "./usuarios.js";
-import { obtenerActividades } from "./actividades.js";
+import { obtenerActividades, calcularCuposRestantes } from "./actividades.js";
 
 // ---- Llamadas a la API ----
 
@@ -48,7 +48,7 @@ export async function guardarReserva(datos) {
     }
 }
 
-// Cuenta las reservas de la actividad y las compara con el cupo
+// Vuelve a traer los datos para que el cupo este actualizado al momento de reservar
 export async function hayCupoDisponible(activityId) {
 
     let actividades = await obtenerActividades();
@@ -62,12 +62,7 @@ export async function hayCupoDisponible(activityId) {
         return false;
     }
 
-    // las canceladas liberan el lugar, las demas ocupan cupo
-    let reservasActivas = reservas.filter(function(reserva) {
-        return reserva.activityId === activityId && reserva.estado !== "cancelada";
-    });
-
-    return reservasActivas.length < Number(actividad.cupoMaximo);
+    return calcularCuposRestantes(actividad, reservas) > 0;
 }
 
 // Junta cada reserva con su usuario y su actividad (mockapi no tiene joins)

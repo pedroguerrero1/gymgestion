@@ -182,7 +182,7 @@ export function mostrarReservas(reservas, contenido, rol) {
         }
 
         return `
-            <tr>
+            <tr data-actividad="${reserva.actividad.id}">
                 <td>${reserva.usuario.nombre}</td>
                 <td>${reserva.actividad.nombre}</td>
                 <td>${reserva.fecha}</td>
@@ -216,11 +216,65 @@ export function mostrarReservas(reservas, contenido, rol) {
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="tabla-reservas">
                         ${filas.join("")}
                     </tbody>
                 </table>
             </div>
         </div>
     `;
+}
+
+
+// Lista para que el admin vea la nomina de inscriptos de una sola actividad
+export function mostrarFiltroActividades(actividades, contenido) {
+
+    const grupo = document.createElement("div");
+    grupo.className = "form-group";
+
+    const label = document.createElement("label");
+    label.textContent = "Ver inscriptos de la actividad:";
+
+    const select = document.createElement("select");
+    select.className = "form-control";
+    select.id = "filtro-actividad";
+
+    const opcionTodas = document.createElement("option");
+    opcionTodas.value = "";
+    opcionTodas.textContent = "Todas las actividades";
+    select.append(opcionTodas);
+
+    actividades.forEach((actividad) => {
+        const opcion = document.createElement("option");
+        opcion.value = actividad.id;
+        opcion.textContent = `${actividad.nombre} (${actividad.dias} - ${actividad.horario})`;
+        select.append(opcion);
+    });
+
+    const total = document.createElement("p");
+    total.className = "text-muted";
+    total.id = "total-filtro";
+
+    grupo.append(label, select);
+
+    contenido.querySelector(".card-body").prepend(grupo, total);
+}
+
+
+// Oculta las filas que no son de la actividad elegida
+export function filtrarPorActividad(activityId, contenido) {
+
+    const filas = contenido.querySelectorAll("#tabla-reservas tr");
+    let visibles = 0;
+
+    filas.forEach((fila) => {
+        if (activityId === "" || fila.dataset.actividad === activityId) {
+            fila.style.display = "";
+            visibles++;
+        } else {
+            fila.style.display = "none";
+        }
+    });
+
+    document.getElementById("total-filtro").textContent = `Mostrando ${visibles} reservas`;
 }

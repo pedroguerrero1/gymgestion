@@ -2,7 +2,9 @@ import { obtenerActividades, mostrarActividades, mostrarFormularioActividad, eli
 
 import {obtenerUsuarios, mostrarUsuarios, mostrarFormularioUsuario, mostrarFormularioEdicionUsuario, eliminarUsuario} from "./usuarios.js";
 
-import {obtenerReservasCompletas, mostrarReservas, cambiarEstadoReserva, guardarReserva, hayCupoDisponible, obtenerMisReservas, obtenerReservas} from "./reservas.js";
+import {obtenerReservasCompletas, mostrarReservas, cambiarEstadoReserva, guardarReserva, hayCupoDisponible, obtenerMisReservas, obtenerReservas, mostrarFiltroActividades, filtrarPorActividad} from "./reservas.js";
+
+import { mostrarDashboard } from "./dashboard.js";
 
 
 // Si no hay sesion iniciada vuelve al login
@@ -38,6 +40,7 @@ let btnActividades = document.getElementById("actividades");
 let btnUsuarios = document.getElementById("usuarios");
 let btnGestionReservas = document.getElementById("gestion-reservas");
 let btnMisReservas = document.getElementById("mis-reservas");
+let btnDashboard = document.getElementById("dashboard");
 let btnCerrarSesion = document.getElementById("cerrar-sesion");
 
 function cambiarActivo(enlace) {
@@ -108,17 +111,29 @@ btnUsuarios.addEventListener("click", async function(event) {
 
 });
 
+// Tabla de reservas del admin con la lista para filtrar por actividad
+async function cargarGestionReservas(filtro) {
+
+    const reservas = await obtenerReservasCompletas();
+    const actividades = await obtenerActividades();
+
+    mostrarReservas(reservas, contenido, usuarioRol);
+    mostrarFiltroActividades(actividades, contenido);
+
+    // si venia filtrado, se mantiene la misma actividad
+    document.getElementById("filtro-actividad").value = filtro;
+    filtrarPorActividad(filtro, contenido);
+
+    controlarAccesos();
+}
+
 btnGestionReservas.addEventListener("click", async function(event) {
 
     event.preventDefault();
 
     cambiarActivo(btnGestionReservas);
 
-    let reservas = await obtenerReservasCompletas();
-
-    mostrarReservas(reservas, contenido, usuarioRol);
-
-    controlarAccesos();
+    await cargarGestionReservas("");
 
 });
 
@@ -133,6 +148,16 @@ btnMisReservas.addEventListener("click", async function(event) {
     mostrarReservas(reservas, contenido, usuarioRol);
 
     controlarAccesos();
+
+});
+
+btnDashboard.addEventListener("click", async function(event) {
+
+    event.preventDefault();
+
+    cambiarActivo(btnDashboard);
+
+    await mostrarDashboard(contenido);
 
 });
 
@@ -297,11 +322,16 @@ contenido.addEventListener("change", async function(event) {
         let resultado = await cambiarEstadoReserva(id, nuevoEstado);
 
         if (resultado) {
-            let reservas = await obtenerReservasCompletas();
-            mostrarReservas(reservas, contenido, usuarioRol);
+            const filtro = document.getElementById("filtro-actividad").value;
+            await cargarGestionReservas(filtro);
         } else {
             alert("No se pudo cambiar el estado");
         }
+    }
+
+    // nomina: el admin elige una actividad y se ven solo sus reservas
+    if (event.target.id === "filtro-actividad") {
+        filtrarPorActividad(event.target.value, contenido);
     }
 
 });

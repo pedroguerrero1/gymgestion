@@ -31,3 +31,8 @@
         grid-template-columns: 1fr;
     }
 }
+/* Dashboard: alto fijo para que los graficos no se estiren */
+.contenedor-grafico {
+    position: relative;
+    height: 300px;
+}

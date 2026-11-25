@@ -101,7 +101,7 @@ export async function mostrarDashboard(contenido) {
                 {
                     label: "Inscriptos",
                     data: inscriptos,
-                    backgroundColor: "#007bff"
+                    backgroundColor: "#1fa463"
                 },
                 {
                     label: "Cupo máximo",

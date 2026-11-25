@@ -50,6 +50,122 @@ function cambiarActivo(enlace) {
     });
 
     enlace.classList.add("active");
+
+    // el titulo de arriba toma el nombre de la opcion elegida
+    const nombreSeccion = enlace.querySelector("p").textContent;
+
+    document.getElementById("titulo-seccion").textContent = nombreSeccion;
+    document.getElementById("breadcrumb-seccion").textContent = nombreSeccion;
+}
+
+// nombre y rol arriba a la derecha
+const usuarioNombre = sessionStorage.getItem("usuarioNombre");
+
+let textoRol = "Socio";
+
+if (usuarioRol === "ADMIN") {
+    textoRol = "Administrador";
+}
+
+document.getElementById("usuario-nav").textContent = `${usuarioNombre} (${textoRol})`;
+
+
+// Pantalla de inicio: saludo, accesos rapidos y (para el socio) sus proximas clases
+async function mostrarInicio() {
+
+    let accesos = `
+        <div class="col-md-4">
+            <button class="btn btn-acceso btn-block" data-ir="actividades">
+                <i class="fas fa-dumbbell"></i> Ver actividades
+            </button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-acceso btn-block" data-ir="mis-reservas">
+                <i class="fas fa-calendar-alt"></i> Mis reservas
+            </button>
+        </div>
+    `;
+
+    if (usuarioRol === "ADMIN") {
+        accesos = `
+            <div class="col-md-4">
+                <button class="btn btn-acceso btn-block" data-ir="actividades">
+                    <i class="fas fa-dumbbell"></i> Actividades
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-acceso btn-block" data-ir="gestion-reservas">
+                    <i class="fas fa-calendar-check"></i> Reservas
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-acceso btn-block" data-ir="dashboard">
+                    <i class="fas fa-chart-bar"></i> Dashboard
+                </button>
+            </div>
+        `;
+    }
+
+    contenido.innerHTML = `
+        <div class="card card-bienvenida">
+            <div class="card-body">
+                <h2 id="saludo"></h2>
+                <p class="mb-0">¿Qué querés hacer hoy?</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            ${accesos}
+        </div>
+
+        <div id="proximas-clases"></div>
+    `;
+
+    // en el saludo va solo el primer nombre
+    const primerNombre = usuarioNombre.split(" ")[0];
+
+    document.getElementById("saludo").textContent = `¡Hola, ${primerNombre}!`;
+
+    if (usuarioRol === "ADMIN") {
+        return;
+    }
+
+    const misReservas = await obtenerMisReservas(usuarioId);
+
+    const confirmadas = misReservas.filter((reserva) => reserva.estado === "confirmada");
+
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "card";
+
+    const header = document.createElement("div");
+    header.className = "card-header";
+
+    const titulo = document.createElement("h3");
+    titulo.className = "card-title";
+    titulo.textContent = "Tus próximas clases";
+
+    header.append(titulo);
+
+    const lista = document.createElement("ul");
+    lista.className = "list-group list-group-flush";
+
+    if (confirmadas.length === 0) {
+        const vacio = document.createElement("li");
+        vacio.className = "list-group-item text-muted";
+        vacio.textContent = "Todavía no tenés clases reservadas. ¡Anotate en una!";
+        lista.append(vacio);
+    }
+
+    confirmadas.forEach((reserva) => {
+        const item = document.createElement("li");
+        item.className = "list-group-item";
+        item.textContent = `${reserva.actividad.nombre} - ${reserva.actividad.dias} a las ${reserva.actividad.horario}`;
+        lista.append(item);
+    });
+
+    tarjeta.append(header, lista);
+
+    document.getElementById("proximas-clases").append(tarjeta);
 }
 
 // ---- Eventos del menu lateral ----
@@ -60,17 +176,7 @@ btnInicio.addEventListener("click", function(event) {
 
     cambiarActivo(btnInicio);
 
-    contenido.innerHTML = `
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Bienvenido a GymGestión</h3>
-            </div>
-
-            <div class="card-body">
-                <p>Panel principal del sistema de gestión del gimnasio</p>
-            </div>
-        </div>
-    `;
+    mostrarInicio();
 
 });
 
@@ -336,6 +442,17 @@ contenido.addEventListener("change", async function(event) {
 
 });
 
+// botones de acceso rapido del inicio: hacen click en la opcion del menu
+contenido.addEventListener("click", function(event) {
+
+    const acceso = event.target.closest("[data-ir]");
+
+    if (acceso) {
+        document.getElementById(acceso.dataset.ir).click();
+    }
+
+});
+
 contenido.addEventListener("click", async function(event) {
 
     let botonReservar = event.target.closest(".btn-reservar");
@@ -396,3 +513,5 @@ contenido.addEventListener("click", async function(event) {
         }
     }
 });
+
+mostrarInicio();

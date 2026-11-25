@@ -36,8 +36,16 @@
             </ul>
       
 
-            <!-- Right navbar links -->
-    
+            <!-- Usuario logueado -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="nav-link">
+                        <i class="fas fa-user-circle mr-1"></i>
+                        <span id="usuario-nav"></span>
+                    </span>
+                </li>
+            </ul>
+
         </nav>
             <!-- /.navbar -->
 
@@ -46,7 +54,8 @@
 
             <!-- Nombre del sistema -->
             <a href="#" class="brand-link">
-            <span class="brand-text">GymGestión</span>
+            <i class="fas fa-heartbeat ml-3 mr-2"></i>
+            <span class="brand-text"><b>Gym</b>Gestión</span>
             </a>
 
             <!-- Menú lateral -->
@@ -116,19 +125,20 @@
 
         </aside>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <!-- Contenido principal -->
+  <main class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Inicio</h1>
+            <h1 id="titulo-seccion">Inicio</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               
-              <li class="breadcrumb-item active">Inicio</li>
+              <li class="breadcrumb-item">GymGestión</li>
+              <li class="breadcrumb-item active" id="breadcrumb-seccion">Inicio</li>
             </ol>
           </div>
         </div>
@@ -156,8 +166,7 @@
 
     </section>
     <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+  </main>
 
   <footer class="main-footer">
 

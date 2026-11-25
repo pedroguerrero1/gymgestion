@@ -1,4 +1,125 @@
-/* Grilla de actividades del socio */
+/* Colores del sistema */
+:root {
+    --verde: #1fa463;
+    --verde-oscuro: #137a48;
+    --celeste: #29b6d8;
+    --fondo-menu: #0f2f2a;
+    --fondo-menu-2: #0d2b38;
+}
+
+
+/* ---- Login y registro ---- */
+
+.login-page,
+.register-page {
+    background: linear-gradient(135deg, var(--verde) 0%, var(--celeste) 100%);
+}
+
+.login-logo,
+.register-logo {
+    color: #fff;
+}
+
+.login-logo .fa-heartbeat,
+.register-logo .fa-heartbeat {
+    margin-right: 5px;
+}
+
+.lema {
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.login-box .card,
+.register-box .card {
+    border-top: 4px solid var(--verde);
+    border-radius: 8px;
+}
+
+.login-page a,
+.register-page a {
+    color: var(--verde-oscuro);
+}
+
+
+/* ---- Menu lateral ---- */
+
+.main-sidebar {
+    background: linear-gradient(180deg, var(--fondo-menu) 0%, var(--fondo-menu-2) 100%);
+}
+
+.brand-link {
+    background-color: var(--verde-oscuro);
+    color: #fff !important;
+}
+
+.brand-link .fa-heartbeat {
+    color: var(--celeste);
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--verde);
+    color: #fff;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:not(.active):hover {
+    color: var(--celeste);
+}
+
+.main-header {
+    border-bottom: 3px solid var(--celeste);
+}
+
+
+/* ---- Botones y tarjetas ---- */
+
+.btn-primary,
+.btn-success {
+    background-color: var(--verde);
+    border-color: var(--verde);
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+    background-color: var(--verde-oscuro);
+    border-color: var(--verde-oscuro);
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.card-header {
+    border-top: 3px solid var(--celeste);
+    border-radius: 8px 8px 0 0;
+}
+
+
+/* ---- Inicio ---- */
+
+.card-bienvenida {
+    background: linear-gradient(135deg, var(--verde) 0%, var(--celeste) 100%);
+    color: #fff;
+}
+
+.btn-acceso {
+    background-color: #fff;
+    border: 2px solid var(--verde);
+    color: var(--verde-oscuro);
+    font-weight: bold;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.btn-acceso:hover {
+    background-color: var(--verde);
+    color: #fff;
+}
+
+
+/* ---- Grilla de actividades del socio ---- */
+
 .grilla-actividades {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -25,14 +146,26 @@
     margin-top: 10px;
 }
 
-/* en el celular las cards ocupan todo el ancho */
-@media (max-width: 576px) {
-    .grilla-actividades {
-        grid-template-columns: 1fr;
-    }
-}
+
 /* Dashboard: alto fijo para que los graficos no se estiren */
 .contenedor-grafico {
     position: relative;
     height: 300px;
+}
+
+
+/* ---- Celular ---- */
+
+@media (max-width: 576px) {
+    .grilla-actividades {
+        grid-template-columns: 1fr;
+    }
+
+    .content-header h1 {
+        font-size: 1.5rem;
+    }
+
+    #usuario-nav {
+        display: none;
+    }
 }

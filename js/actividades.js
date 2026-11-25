@@ -71,6 +71,7 @@ export function mostrarActividades(actividades, contenido) {
             
 
             <div class="card-body">
+                <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -87,6 +88,7 @@ export function mostrarActividades(actividades, contenido) {
                         ${filas}
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     `;

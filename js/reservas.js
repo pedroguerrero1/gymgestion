@@ -205,6 +205,7 @@ export function mostrarReservas(reservas, contenido, rol) {
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -220,6 +221,7 @@ export function mostrarReservas(reservas, contenido, rol) {
                         ${filas.join("")}
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     `;

@@ -63,6 +63,7 @@ export function mostrarUsuarios(usuarios, contenido) {
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
                 <table class="table table-bordered table-striped">
 
                     <thead>
@@ -79,6 +80,7 @@ export function mostrarUsuarios(usuarios, contenido) {
                     </tbody>
 
                 </table>
+                </div>
             </div>
         </div>
     `;
@@ -300,4 +302,4 @@ export function mostrarFormularioEdicionUsuario(usuario, contenido) {
         }
 
     });
-}
+}

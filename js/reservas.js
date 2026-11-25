@@ -48,7 +48,7 @@ export async function guardarReserva(datos) {
     }
 }
 
-// Cuenta las reservas confirmadas de la actividad y las compara con el cupo
+// Cuenta las reservas de la actividad y las compara con el cupo
 export async function hayCupoDisponible(activityId) {
 
     let actividades = await obtenerActividades();
@@ -62,8 +62,9 @@ export async function hayCupoDisponible(activityId) {
         return false;
     }
 
+    // las canceladas liberan el lugar, las demas ocupan cupo
     let reservasActivas = reservas.filter(function(reserva) {
-        return reserva.activityId === activityId && reserva.estado === "confirmada";
+        return reserva.activityId === activityId && reserva.estado !== "cancelada";
     });
 
     return reservasActivas.length < Number(actividad.cupoMaximo);
@@ -111,7 +112,8 @@ export async function obtenerMisReservas(usuarioId) {
 }
 
 
-export async function cancelarReserva(id) {
+// Cambia el estado de una reserva (confirmada, cancelada o asistio)
+export async function cambiarEstadoReserva(id, estado) {
 
     try {
         let respuesta = await fetch(`${URL_BOOKINGS}/${id}`, {
@@ -120,12 +122,12 @@ export async function cancelarReserva(id) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                estado: "cancelada"
+                estado: estado
             })
         });
 
         if (!respuesta.ok) {
-            throw new Error("Error al cancelar la reserva");
+            throw new Error("Error al cambiar el estado de la reserva");
         }
 
         let reserva = await respuesta.json();
@@ -138,16 +140,45 @@ export async function cancelarReserva(id) {
 }
 
 
+// Devuelve el estado con un color distinto segun cual sea
+function mostrarEstado(estado) {
+
+    let color = "badge-success";
+
+    if (estado === "cancelada") {
+        color = "badge-danger";
+    }
+
+    if (estado === "asistio") {
+        color = "badge-info";
+    }
+
+    return `<span class="badge ${color}">${estado}</span>`;
+}
+
+
 // Arma la tabla de reservas, la usan el admin y el socio
-export function mostrarReservas(reservas, contenido) {
+export function mostrarReservas(reservas, contenido, rol) {
 
     let filas = reservas.map(function(reserva) {
 
-        // el boton de cancelar solo aparece si la reserva sigue confirmada
-        let boton = "";
+        let acciones = "";
 
-        if (reserva.estado === "confirmada") {
-            boton = `
+        if (rol === "ADMIN") {
+
+            // el admin elige el estado desde una lista
+            acciones = `
+                <select class="form-control form-control-sm select-estado" data-id="${reserva.id}">
+                    <option value="confirmada" ${reserva.estado === "confirmada" ? "selected" : ""}>Confirmada</option>
+                    <option value="cancelada" ${reserva.estado === "cancelada" ? "selected" : ""}>Cancelada</option>
+                    <option value="asistio" ${reserva.estado === "asistio" ? "selected" : ""}>Asistió</option>
+                </select>
+            `;
+
+        } else if (reserva.estado === "confirmada") {
+
+            // el socio solo puede cancelar las que siguen confirmadas
+            acciones = `
                 <button class="btn btn-danger btn-sm btn-cancelar-reserva"
                     data-id="${reserva.id}">
                     <i class="fas fa-times"></i> Cancelar
@@ -160,16 +191,22 @@ export function mostrarReservas(reservas, contenido) {
                 <td>${reserva.usuario.nombre}</td>
                 <td>${reserva.actividad.nombre}</td>
                 <td>${reserva.fecha}</td>
-                <td>${reserva.estado}</td>
-                <td>${boton}</td>
+                <td>${mostrarEstado(reserva.estado)}</td>
+                <td>${acciones}</td>
             </tr>
         `;
     });
 
+    let titulo = "Mis reservas";
+
+    if (rol === "ADMIN") {
+        titulo = "Gestión de reservas";
+    }
+
     contenido.innerHTML = `
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Gestión de reservas</h3>
+                <h3 class="card-title">${titulo}</h3>
             </div>
 
             <div class="card-body">
@@ -191,4 +228,4 @@ export function mostrarReservas(reservas, contenido) {
             </div>
         </div>
     `;
-}
+}

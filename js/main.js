@@ -2,7 +2,7 @@ import { obtenerActividades, mostrarActividades, mostrarFormularioActividad, eli
 
 import {obtenerUsuarios, mostrarUsuarios, mostrarFormularioUsuario, mostrarFormularioEdicionUsuario, eliminarUsuario} from "./usuarios.js";
 
-import {obtenerReservasCompletas, mostrarReservas, cancelarReserva, guardarReserva, hayCupoDisponible, obtenerMisReservas} from "./reservas.js";
+import {obtenerReservasCompletas, mostrarReservas, cambiarEstadoReserva, guardarReserva, hayCupoDisponible, obtenerMisReservas} from "./reservas.js";
 
 
 // Si no hay sesion iniciada vuelve al login
@@ -106,7 +106,7 @@ btnGestionReservas.addEventListener("click", async function(event) {
 
     let reservas = await obtenerReservasCompletas();
 
-    mostrarReservas(reservas,contenido);
+    mostrarReservas(reservas, contenido, usuarioRol);
 
     controlarAccesos();
 
@@ -120,7 +120,7 @@ btnMisReservas.addEventListener("click", async function(event) {
 
     let reservas = await obtenerMisReservas(usuarioId);
 
-    mostrarReservas(reservas, contenido);
+    mostrarReservas(reservas, contenido, usuarioRol);
 
     controlarAccesos();
 
@@ -253,7 +253,7 @@ contenido.addEventListener("click", async function(event) {
 
         if (confirmar) {
 
-            let resultado = await cancelarReserva(id);
+            let resultado = await cambiarEstadoReserva(id, "cancelada");
 
             if (resultado) {
                 alert("Reserva cancelada correctamente");
@@ -267,8 +267,30 @@ contenido.addEventListener("click", async function(event) {
                     reservas = await obtenerMisReservas(usuarioId);
                 }
 
-                mostrarReservas(reservas, contenido);
+                mostrarReservas(reservas, contenido, usuarioRol);
             }
+        }
+    }
+
+});
+
+// cuando el admin cambia el estado en la lista se guarda en la API
+contenido.addEventListener("change", async function(event) {
+
+    let select = event.target.closest(".select-estado");
+
+    if (select) {
+
+        let id = select.dataset.id;
+        let nuevoEstado = select.value;
+
+        let resultado = await cambiarEstadoReserva(id, nuevoEstado);
+
+        if (resultado) {
+            let reservas = await obtenerReservasCompletas();
+            mostrarReservas(reservas, contenido, usuarioRol);
+        } else {
+            alert("No se pudo cambiar el estado");
         }
     }
 
@@ -318,4 +340,4 @@ contenido.addEventListener("click", async function(event) {
             alert("No se pudo realizar la reserva");
         }
     }
-});
+});

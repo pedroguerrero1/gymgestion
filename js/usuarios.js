@@ -5,13 +5,13 @@ const URL_USERS = "https://6b0105ad1c637a569e52bdac.mockapi.io/api/v1/users";
 export async function obtenerUsuarios() {
 
     try {
-        let respuesta = await fetch(URL_USERS);
+        const respuesta = await fetch(URL_USERS);
 
         if (!respuesta.ok) {
             throw new Error("Error al obtener los usuarios");
         }
 
-        let usuarios = await respuesta.json();
+        const usuarios = await respuesta.json();
 
         return usuarios;
 
@@ -27,7 +27,7 @@ export function mostrarUsuarios(usuarios, contenido) {
 
     let filas = "";
 
-    usuarios.forEach(function(usuario) {
+    usuarios.forEach((usuario) => {
 
         filas += `
             <tr>
@@ -90,7 +90,7 @@ export function mostrarUsuarios(usuarios, contenido) {
 export async function guardarUsuario(datos) {
 
     try {
-        let respuesta = await fetch(URL_USERS, {
+        const respuesta = await fetch(URL_USERS, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -102,7 +102,7 @@ export async function guardarUsuario(datos) {
             throw new Error("Error al guardar el usuario");
         }
 
-        let usuario = await respuesta.json();
+        const usuario = await respuesta.json();
         return usuario;
 
     } catch (error) {
@@ -114,7 +114,7 @@ export async function guardarUsuario(datos) {
 export async function actualizarUsuario(id, datos) {
 
     try {
-        let respuesta = await fetch(`${URL_USERS}/${id}`, {
+        const respuesta = await fetch(`${URL_USERS}/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -126,7 +126,7 @@ export async function actualizarUsuario(id, datos) {
             throw new Error("Error al actualizar el usuario");
         }
 
-        let usuario = await respuesta.json();
+        const usuario = await respuesta.json();
         return usuario;
 
     } catch (error) {
@@ -138,7 +138,7 @@ export async function actualizarUsuario(id, datos) {
 export async function eliminarUsuario(id) {
 
     try {
-        let respuesta = await fetch(`${URL_USERS}/${id}`, {
+        const respuesta = await fetch(`${URL_USERS}/${id}`, {
             method: "DELETE"
         });
 
@@ -205,25 +205,25 @@ export function mostrarFormularioUsuario(contenido) {
         </div>
     `;
 
-        let formulario = document.getElementById("form-usuario");
+        const formulario = document.getElementById("form-usuario");
 
-    formulario.addEventListener("submit", async function(event) {
+    formulario.addEventListener("submit", async (event) => {
 
         event.preventDefault();
 
-        let datos = {
+        const datos = {
             nombre: document.getElementById("nombre").value,
             email: document.getElementById("email").value,
             password: document.getElementById("password").value,
             role: document.getElementById("role").value
         };
 
-        let usuarioGuardado = await guardarUsuario(datos);
+        const usuarioGuardado = await guardarUsuario(datos);
 
         if (usuarioGuardado) {
             alert("Usuario creado correctamente");
 
-            let usuarios = await obtenerUsuarios();
+            const usuarios = await obtenerUsuarios();
             mostrarUsuarios(usuarios, contenido);
         }
 
@@ -280,25 +280,25 @@ export function mostrarFormularioEdicionUsuario(usuario, contenido) {
         </div>
     `;
 
-        let formulario = document.getElementById("form-editar-usuario");
+        const formulario = document.getElementById("form-editar-usuario");
 
-    formulario.addEventListener("submit", async function(event) {
+    formulario.addEventListener("submit", async (event) => {
 
         event.preventDefault();
 
-        let datos = {
+        const datos = {
             nombre: document.getElementById("nombre").value,
             email: document.getElementById("email").value,
             password: document.getElementById("password").value,
             role: document.getElementById("role").value
         };
 
-        let usuarioActualizado = await actualizarUsuario(usuario.id, datos);
+        const usuarioActualizado = await actualizarUsuario(usuario.id, datos);
 
         if (usuarioActualizado) {
             alert("Usuario actualizado correctamente");
 
-            let usuarios = await obtenerUsuarios();
+            const usuarios = await obtenerUsuarios();
             mostrarUsuarios(usuarios, contenido);
         }
 

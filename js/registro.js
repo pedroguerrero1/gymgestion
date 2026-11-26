@@ -40,8 +40,13 @@ formulario.addEventListener("submit", async (event) => {
     const usuarioGuardado = await guardarUsuario(nuevoUsuario);
 
     if (usuarioGuardado) {
-        alert("Cuenta creada, ya podés iniciar sesión");
-        window.location.href = "index.html";
+        // iniciamos sesion directo con el usuario que devolvio la API
+        sessionStorage.setItem("usuarioId", usuarioGuardado.id);
+        sessionStorage.setItem("usuarioNombre", usuarioGuardado.nombre);
+        sessionStorage.setItem("usuarioRol", usuarioGuardado.role);
+
+        alert("¡Cuenta creada! Bienvenido a GymGestión");
+        window.location.href = "sistema.html";
     } else {
         mensajeError.textContent = "No se pudo crear la cuenta, intentá de nuevo";
     }

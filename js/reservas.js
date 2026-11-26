@@ -8,13 +8,13 @@ import { obtenerActividades, calcularCuposRestantes } from "./actividades.js";
 export async function obtenerReservas() {
 
     try {
-        let respuesta = await fetch(URL_BOOKINGS);
+        const respuesta = await fetch(URL_BOOKINGS);
 
         if (!respuesta.ok) {
             throw new Error("Error al obtener las reservas");
         }
 
-        let reservas = await respuesta.json();
+        const reservas = await respuesta.json();
 
         return reservas;
 
@@ -27,7 +27,7 @@ export async function obtenerReservas() {
 export async function guardarReserva(datos) {
 
     try {
-        let respuesta = await fetch(URL_BOOKINGS, {
+        const respuesta = await fetch(URL_BOOKINGS, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -39,7 +39,7 @@ export async function guardarReserva(datos) {
             throw new Error("Error al guardar la reserva");
         }
 
-        let reserva = await respuesta.json();
+        const reserva = await respuesta.json();
 
         return reserva;
 
@@ -52,12 +52,10 @@ export async function guardarReserva(datos) {
 // Vuelve a traer los datos para que el cupo este actualizado al momento de reservar
 export async function hayCupoDisponible(activityId) {
 
-    let actividades = await obtenerActividades();
-    let reservas = await obtenerReservas();
+    const actividades = await obtenerActividades();
+    const reservas = await obtenerReservas();
 
-    let actividad = actividades.find(function(actividad) {
-        return actividad.id === activityId;
-    });
+    const actividad = actividades.find((actividad) => actividad.id === activityId);
 
     if (!actividad) {
         return false;
@@ -69,19 +67,15 @@ export async function hayCupoDisponible(activityId) {
 // Junta cada reserva con su usuario y su actividad (mockapi no tiene joins)
 export async function obtenerReservasCompletas() {
 
-    let reservas = await obtenerReservas();
-    let usuarios = await obtenerUsuarios();
-    let actividades = await obtenerActividades();
+    const reservas = await obtenerReservas();
+    const usuarios = await obtenerUsuarios();
+    const actividades = await obtenerActividades();
 
-    let reservasCompletas = reservas.map(function(reserva) {
+    const reservasCompletas = reservas.map((reserva) => {
 
-        let usuarioEncontrado = usuarios.find(function(usuario) {
-            return usuario.id === reserva.userId;
-        });
+        let usuarioEncontrado = usuarios.find((usuario) => usuario.id === reserva.userId);
 
-        let actividadEncontrada = actividades.find(function(actividad) {
-            return actividad.id === reserva.activityId;
-        });
+        let actividadEncontrada = actividades.find((actividad) => actividad.id === reserva.activityId);
 
         // si el usuario o la actividad se borraron, la reserva se sigue mostrando igual
         if (!usuarioEncontrado) {
@@ -115,11 +109,9 @@ export async function obtenerReservasCompletas() {
 
 export async function obtenerMisReservas(usuarioId) {
 
-    let reservas = await obtenerReservasCompletas();
+    const reservas = await obtenerReservasCompletas();
 
-    let misReservas = reservas.filter(function(reserva) {
-        return reserva.usuario.id === usuarioId;
-    });
+    const misReservas = reservas.filter((reserva) => reserva.usuario.id === usuarioId);
 
     return misReservas;
 }
@@ -129,7 +121,7 @@ export async function obtenerMisReservas(usuarioId) {
 export async function cambiarEstadoReserva(id, estado) {
 
     try {
-        let respuesta = await fetch(`${URL_BOOKINGS}/${id}`, {
+        const respuesta = await fetch(`${URL_BOOKINGS}/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -143,7 +135,7 @@ export async function cambiarEstadoReserva(id, estado) {
             throw new Error("Error al cambiar el estado de la reserva");
         }
 
-        let reserva = await respuesta.json();
+        const reserva = await respuesta.json();
         return reserva;
 
     } catch (error) {
@@ -173,7 +165,7 @@ function mostrarEstado(estado) {
 // Arma la tabla de reservas, la usan el admin y el socio
 export function mostrarReservas(reservas, contenido, rol) {
 
-    let filas = reservas.map(function(reserva) {
+    const filas = reservas.map((reserva) => {
 
         let acciones = "";
 

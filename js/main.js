@@ -8,20 +8,20 @@ import { mostrarDashboard } from "./dashboard.js";
 
 
 // Si no hay sesion iniciada vuelve al login
-let usuarioId = sessionStorage.getItem("usuarioId");
+const usuarioId = sessionStorage.getItem("usuarioId");
 
 if (!usuarioId) {
     window.location.href = "index.html";
 }
 
-let usuarioRol = sessionStorage.getItem("usuarioRol");
+const usuarioRol = sessionStorage.getItem("usuarioRol");
 
 const esAdmin = usuarioRol === "ADMIN";
 
 // Oculta lo que tiene data-role y no corresponde al rol del usuario
 function controlarAccesos() {
 
-    document.querySelectorAll("[data-role]").forEach(function(elemento) {
+    document.querySelectorAll("[data-role]").forEach((elemento) => {
 
         if (elemento.dataset.role !== usuarioRol) {
             elemento.style.display = "none";
@@ -35,19 +35,19 @@ controlarAccesos();
 
 
 
-let contenido = document.getElementById("contenido-principal");
+const contenido = document.getElementById("contenido-principal");
 
-let btnInicio = document.getElementById("inicio");
-let btnActividades = document.getElementById("actividades");
-let btnUsuarios = document.getElementById("usuarios");
-let btnGestionReservas = document.getElementById("gestion-reservas");
-let btnMisReservas = document.getElementById("mis-reservas");
-let btnDashboard = document.getElementById("dashboard");
-let btnCerrarSesion = document.getElementById("cerrar-sesion");
+const btnInicio = document.getElementById("inicio");
+const btnActividades = document.getElementById("actividades");
+const btnUsuarios = document.getElementById("usuarios");
+const btnGestionReservas = document.getElementById("gestion-reservas");
+const btnMisReservas = document.getElementById("mis-reservas");
+const btnDashboard = document.getElementById("dashboard");
+const btnCerrarSesion = document.getElementById("cerrar-sesion");
 
 function cambiarActivo(enlace) {
 
-    document.querySelectorAll(".nav-sidebar .nav-link").forEach(function(item) {
+    document.querySelectorAll(".nav-sidebar .nav-link").forEach((item) => {
         item.classList.remove("active");
     });
 
@@ -172,7 +172,7 @@ async function mostrarInicio() {
 
 // ---- Eventos del menu lateral ----
 
-btnInicio.addEventListener("click", function(event) {
+btnInicio.addEventListener("click", (event) => {
 
     event.preventDefault();
 
@@ -197,7 +197,7 @@ async function cargarActividades() {
     }
 }
 
-btnActividades.addEventListener("click", async function(event) {
+btnActividades.addEventListener("click", async (event) => {
 
     event.preventDefault();
 
@@ -207,7 +207,7 @@ btnActividades.addEventListener("click", async function(event) {
 
 });
 
-btnUsuarios.addEventListener("click", async function(event) {
+btnUsuarios.addEventListener("click", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
@@ -218,7 +218,7 @@ btnUsuarios.addEventListener("click", async function(event) {
 
     cambiarActivo(btnUsuarios);
 
-    let usuarios = await obtenerUsuarios();
+    const usuarios = await obtenerUsuarios();
 
     mostrarUsuarios(usuarios, contenido);
 
@@ -240,7 +240,7 @@ async function cargarGestionReservas(filtro) {
     controlarAccesos();
 }
 
-btnGestionReservas.addEventListener("click", async function(event) {
+btnGestionReservas.addEventListener("click", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
@@ -255,13 +255,13 @@ btnGestionReservas.addEventListener("click", async function(event) {
 
 });
 
-btnMisReservas.addEventListener("click", async function(event) {
+btnMisReservas.addEventListener("click", async (event) => {
 
     event.preventDefault();
 
     cambiarActivo(btnMisReservas);
 
-    let reservas = await obtenerMisReservas(usuarioId);
+    const reservas = await obtenerMisReservas(usuarioId);
 
     mostrarReservas(reservas, contenido, usuarioRol);
 
@@ -269,7 +269,7 @@ btnMisReservas.addEventListener("click", async function(event) {
 
 });
 
-btnDashboard.addEventListener("click", async function(event) {
+btnDashboard.addEventListener("click", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
@@ -284,7 +284,7 @@ btnDashboard.addEventListener("click", async function(event) {
 
 });
 
-btnCerrarSesion.addEventListener("click", function(event) {
+btnCerrarSesion.addEventListener("click", (event) => {
 
     event.preventDefault();
 
@@ -297,7 +297,7 @@ btnCerrarSesion.addEventListener("click", function(event) {
 
 // ---- Eventos de los botones que se cargan dentro del contenido ----
 
-contenido.addEventListener("click", function(event) {
+contenido.addEventListener("click", (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
@@ -316,43 +316,41 @@ contenido.addEventListener("click", function(event) {
 
 
 
-contenido.addEventListener("click", async function(event) {
+contenido.addEventListener("click", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
         return;
     }
 
-    let botonEditar = event.target.closest(".btn-editar");
-    let botonEliminar = event.target.closest(".btn-eliminar");
+    const botonEditar = event.target.closest(".btn-editar");
+    const botonEliminar = event.target.closest(".btn-eliminar");
 
     if (botonEditar && botonEditar.dataset.id) {
 
-        let id = botonEditar.dataset.id;
+        const id = botonEditar.dataset.id;
 
-        let actividades = await obtenerActividades();
+        const actividades = await obtenerActividades();
 
-        let actividadEncontrada = actividades.find(function(actividad){
-            return actividad.id === id;
-        });
+        const actividadEncontrada = actividades.find((actividad) => actividad.id === id);
 
         mostrarFormularioEdicion(actividadEncontrada, contenido);
     }
 
     if (botonEliminar && botonEliminar.dataset.id) {
 
-        let id = botonEliminar.dataset.id;
+        const id = botonEliminar.dataset.id;
 
-        let confirmar = confirm("¿Estás seguro de eliminar esta actividad?");
+        const confirmar = confirm("¿Estás seguro de eliminar esta actividad?");
 
         if (confirmar) {
 
-            let resultado = await eliminarActividad(id);
+            const resultado = await eliminarActividad(id);
 
             if (resultado) {
                 alert("Actividad eliminada correctamente");
 
-                let actividades = await obtenerActividades();
+                const actividades = await obtenerActividades();
                 mostrarActividades(actividades, contenido);
             }
 
@@ -362,24 +360,22 @@ contenido.addEventListener("click", async function(event) {
 });
 
 
-contenido.addEventListener("click", async function(event) {
+contenido.addEventListener("click", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
         return;
     }
 
-    let botonEditar = event.target.closest(".btn-editar-usuario");
+    const botonEditar = event.target.closest(".btn-editar-usuario");
 
     if (botonEditar && botonEditar.dataset.id) {
 
-        let id = botonEditar.dataset.id;
+        const id = botonEditar.dataset.id;
 
-        let usuarios = await obtenerUsuarios();
+        const usuarios = await obtenerUsuarios();
 
-        let usuarioEncontrado = usuarios.find(function(usuario) {
-            return usuario.id === id;
-        });
+        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
 
         mostrarFormularioEdicionUsuario(usuarioEncontrado, contenido);
     }
@@ -387,29 +383,29 @@ contenido.addEventListener("click", async function(event) {
 });
 
 
-contenido.addEventListener("click", async function(event) {
+contenido.addEventListener("click", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
         return;
     }
 
-    let botonEliminar = event.target.closest(".btn-eliminar-usuario");
+    const botonEliminar = event.target.closest(".btn-eliminar-usuario");
 
     if (botonEliminar && botonEliminar.dataset.id) {
 
-        let id = botonEliminar.dataset.id;
+        const id = botonEliminar.dataset.id;
 
-        let confirmar = confirm("¿Estás seguro de eliminar este usuario?");
+        const confirmar = confirm("¿Estás seguro de eliminar este usuario?");
 
         if (confirmar) {
 
-            let resultado = await eliminarUsuario(id);
+            const resultado = await eliminarUsuario(id);
 
             if (resultado) {
                 alert("Usuario eliminado correctamente");
 
-                let usuarios = await obtenerUsuarios();
+                const usuarios = await obtenerUsuarios();
                 mostrarUsuarios(usuarios, contenido);
             }
         }
@@ -417,19 +413,19 @@ contenido.addEventListener("click", async function(event) {
 
 });
 
-contenido.addEventListener("click", async function(event) {
+contenido.addEventListener("click", async (event) => {
 
-    let botonCancelar = event.target.closest(".btn-cancelar-reserva");
+    const botonCancelar = event.target.closest(".btn-cancelar-reserva");
 
     if (botonCancelar && botonCancelar.dataset.id) {
 
-        let id = botonCancelar.dataset.id;
+        const id = botonCancelar.dataset.id;
 
-        let confirmar = confirm("¿Estás seguro de cancelar esta reserva?");
+        const confirmar = confirm("¿Estás seguro de cancelar esta reserva?");
 
         if (confirmar) {
 
-            let resultado = await cambiarEstadoReserva(id, "cancelada");
+            const resultado = await cambiarEstadoReserva(id, "cancelada");
 
             if (resultado) {
                 alert("Reserva cancelada correctamente");
@@ -451,21 +447,21 @@ contenido.addEventListener("click", async function(event) {
 });
 
 // cuando el admin cambia el estado en la lista se guarda en la API
-contenido.addEventListener("change", async function(event) {
+contenido.addEventListener("change", async (event) => {
 
     // solo el admin puede hacer esto
     if (!esAdmin) {
         return;
     }
 
-    let select = event.target.closest(".select-estado");
+    const select = event.target.closest(".select-estado");
 
     if (select) {
 
-        let id = select.dataset.id;
-        let nuevoEstado = select.value;
+        const id = select.dataset.id;
+        const nuevoEstado = select.value;
 
-        let resultado = await cambiarEstadoReserva(id, nuevoEstado);
+        const resultado = await cambiarEstadoReserva(id, nuevoEstado);
 
         if (resultado) {
             const filtro = document.getElementById("filtro-actividad").value;
@@ -483,7 +479,7 @@ contenido.addEventListener("change", async function(event) {
 });
 
 // botones de acceso rapido del inicio: hacen click en la opcion del menu
-contenido.addEventListener("click", function(event) {
+contenido.addEventListener("click", (event) => {
 
     const acceso = event.target.closest("[data-ir]");
 
@@ -493,15 +489,15 @@ contenido.addEventListener("click", function(event) {
 
 });
 
-contenido.addEventListener("click", async function(event) {
+contenido.addEventListener("click", async (event) => {
 
-    let botonReservar = event.target.closest(".btn-reservar");
+    const botonReservar = event.target.closest(".btn-reservar");
 
     if (botonReservar) {
 
-        let activityId = botonReservar.dataset.id;
+        const activityId = botonReservar.dataset.id;
 
-        let disponible = await hayCupoDisponible(activityId);
+        const disponible = await hayCupoDisponible(activityId);
 
         if (!disponible) {
             alert("No hay cupos disponibles para esta actividad");
@@ -522,7 +518,7 @@ contenido.addEventListener("click", async function(event) {
             return;
         }
 
-        let confirmar = confirm("¿Querés reservar esta actividad?");
+        const confirmar = confirm("¿Querés reservar esta actividad?");
 
         if (!confirmar) {
             return;
@@ -544,14 +540,14 @@ contenido.addEventListener("click", async function(event) {
 
         const fechaReserva = `${hoy.getFullYear()}-${mes}-${dia}`;
 
-        let datos = {
+        const datos = {
             userId: usuarioId,
             activityId: activityId,
             fecha: fechaReserva,
             estado: "confirmada"
         };
 
-        let reserva = await guardarReserva(datos);
+        const reserva = await guardarReserva(datos);
 
         if (reserva) {
             alert("¡Reserva realizada correctamente!");

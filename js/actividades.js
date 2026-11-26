@@ -5,13 +5,13 @@ const URL_ACTIVIDADES = "https://6b0105ad1c637a569e52bdac.mockapi.io/api/v1/acti
 export async function obtenerActividades() {
 
     try {
-        let respuesta = await fetch(URL_ACTIVIDADES);
+        const respuesta = await fetch(URL_ACTIVIDADES);
 
         if (!respuesta.ok) {
             throw new Error("Error al obtener las actividades");
         }
 
-        let actividades = await respuesta.json();
+        const actividades = await respuesta.json();
 
         return actividades;
 
@@ -27,7 +27,7 @@ export function mostrarActividades(actividades, contenido) {
 
     let filas = "";
 
-    actividades.forEach(function(actividad) {
+    actividades.forEach((actividad) => {
         
         filas += `
             <tr>
@@ -266,13 +266,13 @@ export function mostrarFormularioActividad(contenido) {
         </div>
     `;
 
-    let formulario = document.getElementById("form-actividad");
+    const formulario = document.getElementById("form-actividad");
 
-    formulario.addEventListener("submit", async function(event) {
+    formulario.addEventListener("submit", async (event) => {
 
         event.preventDefault();
 
-        let datos = {
+        const datos = {
             nombre: document.getElementById("nombre").value,
             instructor: document.getElementById("instructor").value,
             horario: document.getElementById("horario").value,
@@ -280,12 +280,12 @@ export function mostrarFormularioActividad(contenido) {
             cupoMaximo: Number(document.getElementById("cupoMaximo").value)
         };
 
-        let resultado = await guardarActividad(datos);
+        const resultado = await guardarActividad(datos);
 
         if (resultado) {
             alert("Actividad guardada correctamente");
 
-            let actividades = await obtenerActividades();
+            const actividades = await obtenerActividades();
             mostrarActividades(actividades, contenido);
         }
 
@@ -298,7 +298,7 @@ export function mostrarFormularioActividad(contenido) {
 export async function guardarActividad(datos) {
 
     try {
-        let respuesta = await fetch(URL_ACTIVIDADES, {
+        const respuesta = await fetch(URL_ACTIVIDADES, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -321,7 +321,7 @@ export async function guardarActividad(datos) {
 export async function eliminarActividad(id) {
 
     try {
-        let respuesta = await fetch(`${URL_ACTIVIDADES}/${id}`, {
+        const respuesta = await fetch(`${URL_ACTIVIDADES}/${id}`, {
             method: "DELETE"
         });
 
@@ -340,7 +340,7 @@ export async function eliminarActividad(id) {
 export async function actualizarActividad(id, datos) {
 
     try {
-        let respuesta = await fetch(`${URL_ACTIVIDADES}/${id}`, {
+        const respuesta = await fetch(`${URL_ACTIVIDADES}/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -411,13 +411,13 @@ export function mostrarFormularioEdicion(actividad, contenido) {
         </div>
     `;
 
-    let formulario = document.getElementById("form-editar-actividad");
+    const formulario = document.getElementById("form-editar-actividad");
 
-formulario.addEventListener("submit", async function(event) {
+formulario.addEventListener("submit", async (event) => {
 
     event.preventDefault();
 
-    let datos = {
+    const datos = {
         nombre: document.getElementById("nombre").value,
         instructor: document.getElementById("instructor").value,
         horario: document.getElementById("horario").value,
@@ -425,12 +425,12 @@ formulario.addEventListener("submit", async function(event) {
         cupoMaximo: Number(document.getElementById("cupoMaximo").value)
     };
 
-    let resultado = await actualizarActividad(actividad.id, datos);
+    const resultado = await actualizarActividad(actividad.id, datos);
 
     if (resultado) {
         alert("Actividad actualizada correctamente");
 
-        let actividades = await obtenerActividades();
+        const actividades = await obtenerActividades();
         mostrarActividades(actividades, contenido);
     }
 

@@ -16,7 +16,8 @@ export async function obtenerUsuarios() {
         return usuarios;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return [];
     }
 
 }
@@ -105,7 +106,7 @@ export async function guardarUsuario(datos) {
         return usuario;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
@@ -129,7 +130,7 @@ export async function actualizarUsuario(id, datos) {
         return usuario;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
@@ -148,7 +149,7 @@ export async function eliminarUsuario(id) {
         return true;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
     }
 }
@@ -189,7 +190,7 @@ export function mostrarFormularioUsuario(contenido) {
                         <label>Rol</label>
                         <select class="form-control" id="role" required>
                             <option value="">Seleccionar rol</option>
-                            <option value="USER">USER</option>
+                            <option value="USUARIO">USUARIO</option>
                             <option value="ADMIN">ADMIN</option>
                         </select>
                     </div>
@@ -264,7 +265,7 @@ export function mostrarFormularioEdicionUsuario(usuario, contenido) {
                     <div class="form-group">
                         <label>Rol</label>
                         <select class="form-control" id="role" required>
-                            <option value="USER" ${usuario.role === "USER" ? "selected" : ""}>USER</option>
+                            <option value="USUARIO" ${usuario.role === "USUARIO" ? "selected" : ""}>USUARIO</option>
                             <option value="ADMIN" ${usuario.role === "ADMIN" ? "selected" : ""}>ADMIN</option>
                         </select>
                     </div>

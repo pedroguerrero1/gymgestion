@@ -19,7 +19,8 @@ export async function obtenerReservas() {
         return reservas;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return [];
     }
 }
 
@@ -43,7 +44,7 @@ export async function guardarReserva(datos) {
         return reserva;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
@@ -81,6 +82,23 @@ export async function obtenerReservasCompletas() {
         let actividadEncontrada = actividades.find(function(actividad) {
             return actividad.id === reserva.activityId;
         });
+
+        // si el usuario o la actividad se borraron, la reserva se sigue mostrando igual
+        if (!usuarioEncontrado) {
+            usuarioEncontrado = {
+                id: reserva.userId,
+                nombre: "Usuario eliminado"
+            };
+        }
+
+        if (!actividadEncontrada) {
+            actividadEncontrada = {
+                id: reserva.activityId,
+                nombre: "Actividad eliminada",
+                dias: "-",
+                horario: "-"
+            };
+        }
 
         return {
             id: reserva.id,
@@ -129,7 +147,7 @@ export async function cambiarEstadoReserva(id, estado) {
         return reserva;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }

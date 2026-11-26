@@ -16,12 +16,14 @@ if (!usuarioId) {
 
 let usuarioRol = sessionStorage.getItem("usuarioRol");
 
+const esAdmin = usuarioRol === "ADMIN";
+
 // Oculta lo que tiene data-role y no corresponde al rol del usuario
 function controlarAccesos() {
 
     document.querySelectorAll("[data-role]").forEach(function(elemento) {
 
-        if (elemento.dataset.role !== usuarioRol.toLowerCase()) {
+        if (elemento.dataset.role !== usuarioRol) {
             elemento.style.display = "none";
         }
 
@@ -207,6 +209,11 @@ btnActividades.addEventListener("click", async function(event) {
 
 btnUsuarios.addEventListener("click", async function(event) {
 
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
+
     event.preventDefault();
 
     cambiarActivo(btnUsuarios);
@@ -235,6 +242,11 @@ async function cargarGestionReservas(filtro) {
 
 btnGestionReservas.addEventListener("click", async function(event) {
 
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
+
     event.preventDefault();
 
     cambiarActivo(btnGestionReservas);
@@ -259,6 +271,11 @@ btnMisReservas.addEventListener("click", async function(event) {
 
 btnDashboard.addEventListener("click", async function(event) {
 
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
+
     event.preventDefault();
 
     cambiarActivo(btnDashboard);
@@ -282,21 +299,29 @@ btnCerrarSesion.addEventListener("click", function(event) {
 
 contenido.addEventListener("click", function(event) {
 
-
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
 
     if (event.target.closest("#btn-nueva-actividad")) {
         mostrarFormularioActividad(contenido);
     }
 
     if (event.target.closest("#btn-nuevo-usuario")) {
-    mostrarFormularioUsuario(contenido);
-}
+        mostrarFormularioUsuario(contenido);
+    }
 
 });
 
 
 
 contenido.addEventListener("click", async function(event) {
+
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
 
     let botonEditar = event.target.closest(".btn-editar");
     let botonEliminar = event.target.closest(".btn-eliminar");
@@ -339,6 +364,11 @@ contenido.addEventListener("click", async function(event) {
 
 contenido.addEventListener("click", async function(event) {
 
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
+
     let botonEditar = event.target.closest(".btn-editar-usuario");
 
     if (botonEditar && botonEditar.dataset.id) {
@@ -358,6 +388,11 @@ contenido.addEventListener("click", async function(event) {
 
 
 contenido.addEventListener("click", async function(event) {
+
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
 
     let botonEliminar = event.target.closest(".btn-eliminar-usuario");
 
@@ -417,6 +452,11 @@ contenido.addEventListener("click", async function(event) {
 
 // cuando el admin cambia el estado en la lista se guarda en la API
 contenido.addEventListener("change", async function(event) {
+
+    // solo el admin puede hacer esto
+    if (!esAdmin) {
+        return;
+    }
 
     let select = event.target.closest(".select-estado");
 
@@ -488,13 +528,21 @@ contenido.addEventListener("click", async function(event) {
             return;
         }
 
-        // fecha de hoy en formato YYYY-MM-DD
-        let fecha = new Date();
+        // fecha de hoy en formato YYYY-MM-DD (al mes y al dia les agregamos un 0 si tienen un solo numero)
+        const hoy = new Date();
 
-        let fechaReserva = 
-            fecha.getFullYear() + "-" +
-            String(fecha.getMonth() + 1).padStart(2, "0") + "-" +
-            String(fecha.getDate()).padStart(2, "0");
+        let mes = hoy.getMonth() + 1;
+        let dia = hoy.getDate();
+
+        if (mes < 10) {
+            mes = "0" + mes;
+        }
+
+        if (dia < 10) {
+            dia = "0" + dia;
+        }
+
+        const fechaReserva = `${hoy.getFullYear()}-${mes}-${dia}`;
 
         let datos = {
             userId: usuarioId,

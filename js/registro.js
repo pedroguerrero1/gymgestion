@@ -34,7 +34,7 @@ formulario.addEventListener("submit", async (event) => {
         nombre: nombre,
         email: email,
         password: password,
-        role: "USER"
+        role: "USUARIO"
     };
 
     const usuarioGuardado = await guardarUsuario(nuevoUsuario);

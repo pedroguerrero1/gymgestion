@@ -16,7 +16,8 @@ export async function obtenerActividades() {
         return actividades;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return [];
     }
 
 }
@@ -39,14 +40,14 @@ export function mostrarActividades(actividades, contenido) {
                 <td>
                     <button class="btn btn-warning btn-sm btn-editar"
                         data-id="${actividad.id}"
-                        data-role="admin"
+                        data-role="ADMIN"
                         title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
 
                     <button class="btn btn-danger btn-sm btn-eliminar"
                         data-id="${actividad.id}"
-                        data-role="admin"
+                        data-role="ADMIN"
                         title="Eliminar">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -62,7 +63,7 @@ export function mostrarActividades(actividades, contenido) {
                 <h3 class="card-title">Actividades del gimnasio</h3>
 
                 <div class="card-tools">
-                    <button class="btn btn-primary" data-role="admin" id="btn-nueva-actividad">
+                    <button class="btn btn-primary" data-role="ADMIN" id="btn-nueva-actividad">
                         <i class="fas fa-plus"></i> Nueva actividad
                     </button>
                 </div>
@@ -312,7 +313,7 @@ export async function guardarActividad(datos) {
         return await respuesta.json();
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
@@ -331,7 +332,7 @@ export async function eliminarActividad(id) {
         return true;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
     }
 }
@@ -354,7 +355,7 @@ export async function actualizarActividad(id, datos) {
         return await respuesta.json();
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
